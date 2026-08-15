@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1e2f35;
+
+  /* Токены из Figma (ACRELIS_WEB) */
+  --color-brand-dark: #213a42; /* фон hero-секции */
+  --color-brand-red: #ff050a;
+  --color-brand-pink: #f43367;
+  --color-brand-accent: #f82245; /* акцент лого/иконки на светлом фоне */
+  --color-body-muted: #969696; /* серый параграфный текст */
+  --color-input-border: rgba(150, 150, 150, 0.2);
+  --color-input-bg: rgba(150, 150, 150, 0.05);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-dark: var(--color-brand-dark);
+  --color-brand-red: var(--color-brand-red);
+  --color-brand-pink: var(--color-brand-pink);
+  --color-brand-accent: var(--color-brand-accent);
+  --color-body-muted: var(--color-body-muted);
+  --color-input-border: var(--color-input-border);
+  --color-input-bg: var(--color-input-bg);
+  --font-sans: var(--font-axiforma);
+  --font-body: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-axiforma), Arial, Helvetica, sans-serif;
+}
