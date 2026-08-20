@@ -17,12 +17,9 @@ export default function Footer() {
 
   return (
     <footer className="relative w-full overflow-hidden bg-[#1D1D1B] px-6 py-8 sm:px-[90px]">
-      {/* Декоративные пятна на фоне. В Figma они сами по себе чёткие (opacity: 0.2 в SVG) —
-          мягкое сияние даёт не blur() на фигурах, а отдельный слой с backdrop-blur поверх
-          них (node 383:1024, 83.8px). Раньше здесь был blur-md прямо на картинках, из-за
-          чего пятна выглядели чёткими кругами со слегка смазанным краем, а не размытым
-          сиянием, как в макете. Ellipse 2206 в Figma продублирована дважды (383:1021 и
-          383:1022) — оба экземпляра нужны, это не дубль-артефакт. */}
+      {/* Декоративные пятна на фоне. Мягкое сияние даёт не blur() на самих фигурах
+          (opacity: 0.2 в SVG), а отдельный слой с backdrop-blur поверх них — blur()
+          на картинках давал чёткие круги со смазанным краем, а не размытое сияние. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
         <div className="absolute -top-[53.83px] left-[217.65px] size-[138.541px]">
           {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}

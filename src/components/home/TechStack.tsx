@@ -55,17 +55,15 @@ export default function TechStack() {
 
   return (
     <section className="relative overflow-hidden bg-white px-6 py-16 sm:px-[90px] sm:py-[120px]">
-      {/* eslint-disable-next-line @next/next/no-img-element -- декоративная плоская
-          PNG-заготовка, вытянутая напрямую рендером узла из Figma (get_screenshot на
-          590:5107), а не пересобрана через CSS clip/rotate/градиент — после трёх попыток
-          воссоздать эффект вручную оказалось надёжнее взять готовый пиксельный результат. */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- decorative flat PNG cutout,
+          not recreated via CSS clip/rotate/gradient */}
       <img
         src="/images/decor/tech-stack-swirl-left.png"
         alt=""
         aria-hidden
         className="pointer-events-none absolute -left-4 -top-4 hidden w-[320px] lg:block"
       />
-      {/* eslint-disable-next-line @next/next/no-img-element -- см. комментарий выше, узел 590:5136 */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- see comment above */}
       <img
         src="/images/decor/tech-stack-swirl-right.png"
         alt=""
