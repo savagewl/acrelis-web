@@ -3,70 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useMotionTemplate, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { easeInOut, motion, useMotionTemplate, useScroll, useTransform, type MotionValue } from "framer-motion";
 import ArrowRightIcon from "@/components/ui/ArrowRightIcon";
+import { CASES, type CaseStudy } from "@/data/home/cases";
 
-interface CaseMetric {
-  value: string;
-  label: string;
-}
-
-interface CaseStudy {
-  category: string;
-  title: string;
-  description: string;
-  metrics: CaseMetric[];
-  stack: string;
-  image: string;
-  accent: string;
-}
-
-const CASES: CaseStudy[] = [
-  {
-    category: "Разработка информационного портала",
-    title: "«Россия – Исламский мир»",
-    description:
-      "Официальный информационный портал Группы стратегического видения «Россия – Исламский мир»",
-    metrics: [
-      { value: "+220%", label: "рост продаж" },
-      { value: "+85%", label: "вовлечённость" },
-      { value: "+85%", label: "активность" },
-    ],
-    stack: "next js, django python, REST API",
-    image: "/images/home/cases/russia.jpg",
-    accent: "#15604B",
-  },
-  {
-    category: "Разработка сайта для сети отелей",
-    title: "«ERA Hotels Group»",
-    description:
-      "Единый сайт сети отелей в Крыму, Ялте и Нижнем Новгороде с онлайн-бронированием, выбором объектов и разделами для мероприятий",
-    metrics: [
-      { value: "+250%", label: "онлайн-брони" },
-      { value: "+200%", label: "органический трафик" },
-      { value: "−30%", label: "ручной брони" },
-    ],
-    stack: "React js, Gin.go, REST API",
-    image: "/images/home/cases/era.jpg",
-    accent: "#CFA776",
-  },
-  {
-    category: "Разработка сайта апарт-комплекса",
-    title: "«Ялта Апарт»",
-    description:
-      "Сайт-витрина апартаментов на Южном берегу Крыма с каталогом объектов, фотогалереями, планировками и быстрой заявкой на бронирование, таймерами акций и интеграцией Яндекс.Карт",
-    metrics: [
-      { value: "+60%", label: "заявок на бронь" },
-      { value: "−35%", label: "звонков с вопросами" },
-      { value: "+45%", label: "конверсии" },
-    ],
-    stack: "next js, Gin.go, REST API",
-    image: "/images/home/cases/yalta.jpg",
-    accent: "#81BB33",
-  },
-];
-
-function DecorGlow() {
+export function DecorGlow() {
   // Приближение декоративного радиального пятна Figma ("Ellipse 2214": серый →
   // белый радиальный градиент, gaussian blur, opacity 0.6) — не критично для пикселя,
   // просто фон-подложка за карточками. Мягкость даём стопами самого градиента, а не
@@ -102,7 +43,9 @@ function CaseCardContent({
   imageY,
   imageScale,
   imageFilter,
-  imageTint,
+  borderWidth,
+  borderColor,
+  bgOpacity,
 }: {
   study: CaseStudy;
   shouldAnimate: boolean;
@@ -111,10 +54,24 @@ function CaseCardContent({
   imageY: MotionValue<number>;
   imageScale: MotionValue<number>;
   imageFilter: MotionValue<string>;
-  imageTint: MotionValue<number>;
+  borderWidth: MotionValue<number>;
+  borderColor: MotionValue<string>;
+  bgOpacity: MotionValue<number>;
 }) {
   return (
     <div className="relative z-10 mx-auto flex w-full max-w-[1260px] flex-col gap-10 lg:flex-row lg:items-center lg:justify-end lg:gap-[82px]">
+      {shouldAnimate && (
+        // Подложка фиксированного размера ПОД ТЕКСТОВОЙ КОЛОНКОЙ (не под всей карточкой —
+        // см. комментарий у bgOpacity в PinnedCase). Раньше была inset-0 от ВСЕГО слота
+        // карточки (во весь экран) — пока активная карточка лежала выше пика по z-index,
+        // эта подложка гасила белым вообще всё вокруг, включая место, где должен торчать
+        // край пик-превью следующей карточки.
+        <motion.div
+          aria-hidden
+          className="absolute inset-y-0 left-0 hidden w-full max-w-[536px] bg-white lg:block"
+          style={{ opacity: bgOpacity }}
+        />
+      )}
       <motion.div
         style={shouldAnimate ? { opacity: textOpacity } : undefined}
         className="flex w-full max-w-[536px] flex-col gap-12"
@@ -157,16 +114,14 @@ function CaseCardContent({
           выглядывания") и доезжает до полного размера ровно к моменту ухода текущей —
           все трансформы завязаны на scrollYProgress, без отдельного direction-стейта. */}
       <motion.div
-        style={{
-          borderColor: study.accent,
-          ...(shouldAnimate ? { x: imageX, y: imageY, scale: imageScale, filter: imageFilter } : {}),
-        }}
-        className="relative h-[280px] w-full shrink-0 overflow-hidden rounded-[24px] border-4 sm:h-[340px] lg:h-[409px] lg:w-[642px] lg:rounded-[34px]"
+        style={
+          shouldAnimate
+            ? { borderWidth, borderColor, x: imageX, y: imageY, scale: imageScale, filter: imageFilter }
+            : { borderWidth: 4, borderColor: study.accent }
+        }
+        className="relative h-[280px] w-full shrink-0 overflow-hidden rounded-[24px] sm:h-[340px] lg:h-[409px] lg:w-[642px] lg:rounded-[34px]"
       >
         <Image src={study.image} alt={study.title} fill className="object-cover" sizes="(min-width: 1024px) 642px, 100vw" />
-        {shouldAnimate && (
-          <motion.div aria-hidden className="absolute inset-0 bg-[#484848]" style={{ opacity: imageTint }} />
-        )}
       </motion.div>
     </div>
   );
@@ -202,7 +157,9 @@ function PinnedCase({
   // друг с другом. Картинке этот широкий диапазон оставлен намеренно (её и должно быть
   // видно заранее, размыто, как выглядывающий превью) — только текст синхронизирован
   // с уходом предыдущей карточки.
-  const textHalf = step * 0.15;
+  // Раньше множитель был 0.15 — окно кроссфейда получалось совсем узким (~5% скролла
+  // на сегмент), из-за чего смена карточек читалась как резкий рывок, а не перелистывание.
+  const textHalf = step * 0.3;
   const exitFadeStart = Math.max(0, exit - textHalf);
   const exitFadeEnd = Math.min(1, exit + textHalf);
 
@@ -255,6 +212,13 @@ function PinnedCase({
   // карточки (влияет и на текст, и на картинку) — отвечает за появление/исчезновение
   // и утягивает картинку вниз при уходе; отдельный textOpacity ниже сужает именно
   // видимость ТЕКСТА до момента реального кроссфейда.
+  // ВАЖНО: без опции ease — этот проект использует нативное аппаратное ускорение
+  // useTransform через WAAPI/ScrollTimeline (см. комментарий выше про accelerate), а оно
+  // умеет принимать только CSS-совместимый easing, а не произвольную JS-функцию наподобие
+  // framer-motion'овского easeInOut. С JS-функцией в ease WAAPI-путь для opacity молча
+  // "залипал" на первом значении диапазона (проверено через getComputedStyle) — сама
+  // анимация переставала идти, а не просто теряла плавность. Плавность здесь даёт только
+  // расширенное окно (textHalf), не easing-кривая.
   const y = useTransform(scrollYProgress, yInput, yOutput);
   const opacity = useTransform(scrollYProgress, yInput, opacityOutput);
 
@@ -268,18 +232,29 @@ function PinnedCase({
     isFirst ? [1, 1] : [0, 0, 1, 1],
   );
 
-  // Непрозрачная белая подложка ПОД текстом (не под всей карточкой — см. комментарий
-  // ниже) фиксированного размера lg:inset-0, а не по высоте контента: высота описания
-  // разная у разных кейсов (разное число строк), поэтому подложка размером "под текст"
-  // не всегда доставала бы до кнопки "Подробнее" нижней карточки. У неё СВОЯ кривая,
-  // отдельная от textOpacity: не тянется через всю широкую фазу "выглядывания" картинки
-  // (иначе это и есть та самая белая дымка поверх текущей активной карточки), а
-  // появляется рывком чуть раньше самого текста — к моменту, когда текст реально
-  // начинает кроссфейдиться, подложка уже полностью непрозрачна и готова его маскировать.
+  // Непрозрачная белая подложка ПОД текстом — фиксированной ВЫСОТЫ на весь слот карточки
+  // (inset-y-0), а не по высоте контента: высота описания разная у разных кейсов (разное
+  // число строк), поэтому подложка размером "под текст" не всегда доставала бы до кнопки
+  // "Подробнее" нижней карточки. По ШИРИНЕ подложка ограничена текстовой колонкой
+  // (max-w-[536px], см. CaseCardContent) — раньше была inset-0 на всю карточку целиком,
+  // включая область под картинкой, из-за чего гасила собой пик-превью следующей карточки,
+  // которое торчит за пределами картинки текущей. У подложки СВОЯ кривая, отдельная от
+  // textOpacity: не тянется через всю широкую фазу "выглядывания" картинки (иначе это и
+  // есть та самая белая дымка поверх текущей активной карточки), а появляется рывком чуть
+  // раньше самого текста — к моменту, когда текст реально начинает кроссфейдиться, подложка
+  // уже полностью непрозрачна и готова его маскировать, а затем гаснет обратно в 0 (не
+  // остаётся непрозрачной насовсем!): после того как карточка "устаканилась", маскировать
+  // уже нечего — сзади только декоративный градиент DecorGlow, а не соседняя карточка.
+  // Раньше подложка после появления НАВСЕГДА оставалась 1 до конца всего скролла секции —
+  // это было незаметно только пока подложка была во весь слот (inset-0) и совпадала с
+  // белым фоном секции; после того как её сузили до колонки текста, эта постоянная
+  // непрозрачность давала чёткий белый прямоугольник поверх градиента на всё время, пока
+  // карточка активна. У первой карточки маскировать нечего вообще (перед ней в
+  // последовательности ничего нет, её текст ни с чем не кроссфейдится) — подложка всегда 0.
   const bgOpacity = useTransform(
     scrollYProgress,
-    isFirst ? [0, 1] : [0, enter - textHalf, enter, 1],
-    isFirst ? [1, 1] : [0, 0, 1, 1],
+    isFirst ? [0, 1] : [0, enter - textHalf, enter, enter + textHalf, 1],
+    isFirst ? [0, 0] : [0, 0, 1, 0, 0],
   );
 
   // Геометрия картинки: ВИДИМОСТЬ призрака (через общую opacity выше) растянута на весь
@@ -304,14 +279,29 @@ function PinnedCase({
     : hasPeek
       ? [peekStart, growStart, enter, 1]
       : [0, 1];
-  const peekOut = (peek: number, front: number) =>
+  const peekOut = <T,>(peek: T, front: T): T[] =>
     needsLeadingZero ? [peek, peek, peek, front, front] : hasPeek ? [peek, peek, front, front] : [front, front];
   const imageX = useTransform(scrollYProgress, geomInput, peekOut(PEEK_OFFSET_X, 0));
   const imageY = useTransform(scrollYProgress, geomInput, peekOut(PEEK_OFFSET_Y, 0));
   const imageScale = useTransform(scrollYProgress, geomInput, peekOut(PEEK_SCALE, 1));
-  const imageBlurPx = useTransform(scrollYProgress, geomInput, peekOut(2, 0));
-  const imageTint = useTransform(scrollYProgress, geomInput, peekOut(0.45, 0));
+  const imageBlurPx = useTransform(scrollYProgress, geomInput, peekOut(5, 0));
   const imageFilter = useMotionTemplate`blur(${imageBlurPx}px)`;
+  // В Figma у "выглядывающей" карточки нет толстой цветной рамки — только тонкая
+  // полупрозрачная белая (2.672px, rgba(255,255,255,0.38)); толстая рамка цвета study.accent
+  // (4px) появляется только когда карточка дорастает до полного размера. Раньше рамка была
+  // статичной (всегда 4px accent), из-за чего пик выглядел как чёткая цветная карточка,
+  // наезжающая на текущую, а не как мягкое размытое превью. Тёмная полупрозрачная заливка
+  // поверх картинки (imageTint) убрана целиком — в Figma peek-слой не темнят, только blur +
+  // тонкая белая рамка; тонировка 45% поверх и так уже неяркого блюра давала грязно-серый
+  // вид ("серая херня"), а не мягкое светлое превью.
+  // ease здесь (в отличие от y/opacity/textOpacity/bgOpacity/imageX/Y/scale/blur выше) не
+  // ломает WAAPI-ускорение: border-width/border-color не входят в набор аппаратно
+  // ускоряемых CSS-свойств (opacity/clipPath/filter/transform/backgroundColor) — .accelerate
+  // для них хоть и проставляется, но реально никогда не используется, всегда JS-путь.
+  const borderWidth = useTransform(scrollYProgress, geomInput, peekOut(2.672, 4), { ease: easeInOut });
+  const borderColor = useTransform(scrollYProgress, geomInput, peekOut("rgba(255,255,255,0.38)", study.accent), {
+    ease: easeInOut,
+  });
 
   // На сервере и на самом первом клиентском рендере shouldAnimate всегда false (см.
   // комментарий у CaseShowcase) — inline style в этот момент одинаков на сервере и
@@ -320,22 +310,24 @@ function PinnedCase({
   // ре-рендер, а не гидратация, так что React с ним ничего не сверяет.
   return (
     <motion.div
-      style={shouldAnimate ? { y, opacity, zIndex: index } : undefined}
+      style={shouldAnimate ? { y, opacity, zIndex: count - index } : undefined}
+      // zIndex УБЫВАЕТ с индексом (текущая карточка всегда стоит НАД следующей), а не
+      // наоборот. По точным координатам из Figma пик-слой следующей карточки геометрически
+      // заходит примерно на 38% высоты под текущую активную (не просто чуть высовывается
+      // сбоку) — в макете это незаметно ровно потому, что активная карточка лежит НАД пиком
+      // и перекрывает эту заходящую часть собой. Раньше здесь было zIndex: index (следующая
+      // карточка поверх текущей) — из-за этого пик-превью вылезал НАД активной карточкой и
+      // закрывал её шапку/лого вместо того, чтобы выглядывать у неё из-под низа.
+      //
       // bg-white только на мобильном обычном потоке (там карточки идут одна за другой,
       // фон каждой безобиден); на десктопе карточки лежат друг на друге абсолютным
-      // позиционированием — если у КАЖДОЙ свой непрозрачный белый фон, то карточка,
-      // ещё только проявляющаяся (opacity 0→1, у неё выше z-index, т.к. она следующая
-      // по счёту), просвечивает поверх текущей полупрозрачной белой "дымкой", визуально
-      // "выцветая" всё, что под ней — даже когда её СОБСТВЕННЫЙ текст/картинка отрендерены
-      // с полностью корректной непрозрачностью. Фон на десктопе даёт общий sticky-контейнер.
+      // позиционированием, фон на десктопе даёт общий sticky-контейнер — у каждой карточки
+      // своя lg:bg-transparent + отдельная narrow-window белая подложка (bgOpacity ниже),
+      // которая проявляется только к моменту собственного кроссфейда текста, а не на всю
+      // широкую фазу "выглядывания" (иначе она давала бы полупрозрачную белую "дымку" поверх
+      // соседних карточек).
       className="relative flex items-center overflow-hidden bg-white px-6 py-16 sm:px-[90px] sm:py-24 lg:absolute lg:inset-0 lg:bg-transparent lg:py-0"
     >
-      {shouldAnimate && (
-        // Подложка фиксированного размера (весь слот карточки, а не высота контента) —
-        // см. комментарий у bgOpacity выше. Ставится под контентом по DOM-порядку, сам
-        // контент (z-10) рисуется поверх неё.
-        <motion.div aria-hidden className="absolute inset-0 hidden bg-white lg:block" style={{ opacity: bgOpacity }} />
-      )}
       <CaseCardContent
         study={study}
         shouldAnimate={shouldAnimate}
@@ -344,7 +336,9 @@ function PinnedCase({
         imageY={imageY}
         imageScale={imageScale}
         imageFilter={imageFilter}
-        imageTint={imageTint}
+        borderWidth={borderWidth}
+        borderColor={borderColor}
+        bgOpacity={bgOpacity}
       />
     </motion.div>
   );

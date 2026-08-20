@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Logo from "@/components/base/Logo";
 import { useModal } from "@/components/providers/ModalProvider";
 
 const NAV_LINKS = [
@@ -16,30 +17,36 @@ export default function Footer() {
 
   return (
     <footer className="relative w-full overflow-hidden bg-[#1D1D1B] px-6 py-8 sm:px-[90px]">
-      {/* Декоративные размытые пятна на фоне — SVG уже несёт свою непрозрачность 20%
-          (см. сами файлы), поэтому здесь без дополнительного opacity-множителя — раньше
-          это (opacity-40 обёртки × 0.2 внутри SVG × blur-2xl) гасило пятна почти до полной
-          невидимости, хотя в самой Figma они хорошо заметны. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 hidden blur-md lg:block">
-        {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
-        <img src="/images/decor/footer/ellipse-1.svg" alt="" className="absolute left-[217px] -top-[54px] w-[139px]" />
-        {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
-        <img
-          src="/images/decor/footer/ellipse-2.svg"
-          alt=""
-          className="absolute left-[829px] top-[90px] w-[326px] -rotate-[26deg]"
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
-        <img
-          src="/images/decor/footer/ellipse-3.svg"
-          alt=""
-          className="absolute left-[1196px] top-[295px] w-[107px] -rotate-[26deg]"
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
-        <img
-          src="/images/decor/footer/ellipse-4.svg"
-          alt=""
-          className="absolute left-[30px] top-[159px] w-[157px] rotate-[27deg]"
+      {/* Декоративные пятна на фоне. В Figma они сами по себе чёткие (opacity: 0.2 в SVG) —
+          мягкое сияние даёт не blur() на фигурах, а отдельный слой с backdrop-blur поверх
+          них (node 383:1024, 83.8px). Раньше здесь был blur-md прямо на картинках, из-за
+          чего пятна выглядели чёткими кругами со слегка смазанным краем, а не размытым
+          сиянием, как в макете. Ellipse 2206 в Figma продублирована дважды (383:1021 и
+          383:1022) — оба экземпляра нужны, это не дубль-артефакт. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+        <div className="absolute -top-[53.83px] left-[217.65px] size-[138.541px]">
+          {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
+          <img src="/images/decor/footer/ellipse-1.svg" alt="" className="size-full" />
+        </div>
+        <div className="absolute left-[829.23px] top-[89.71px] flex h-[210.866px] w-[325.922px] items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
+          <img src="/images/decor/footer/ellipse-2.svg" alt="" className="h-[76px] w-[325.51px] -rotate-[25.97deg]" />
+        </div>
+        <div className="absolute left-[1195.66px] top-[294.63px] flex h-[104.109px] w-[106.745px] items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
+          <img src="/images/decor/footer/ellipse-3.svg" alt="" className="h-[76px] w-[81.716px] -rotate-[25.97deg]" />
+        </div>
+        <div className="absolute left-[1058.19px] top-[262.36px] flex h-[104.109px] w-[106.745px] items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно, второй экземпляр той же фигуры */}
+          <img src="/images/decor/footer/ellipse-3.svg" alt="" className="h-[76px] w-[81.716px] -rotate-[25.97deg]" />
+        </div>
+        <div className="absolute left-[30.41px] top-[159.17px] flex h-[117.322px] w-[157.355px] items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element -- декоративное пятно */}
+          <img src="/images/decor/footer/ellipse-4.svg" alt="" className="h-[56.384px] w-[147.866px] rotate-[26.97deg]" />
+        </div>
+        <div
+          className="absolute -left-[24.61px] top-0 h-[467.922px] w-[1489.611px] backdrop-blur-[83.8px]"
+          style={{ backgroundColor: "rgba(29,29,27,0.01)" }}
         />
       </div>
 
@@ -55,25 +62,18 @@ export default function Footer() {
             ))}
           </ul>
 
-          <Link href="/" className="relative inline-flex items-center gap-3" aria-label="ACRELIS — на главную">
-            {/* eslint-disable-next-line @next/next/no-img-element -- точная векторная иконка из Figma */}
-            <img src="/images/icons/logo-icon-white.svg" alt="" className="h-[52px] w-[52px]" />
-            <span className="flex flex-col leading-none">
-              <span className="font-sans text-[32px] font-semibold text-brand-accent">акрелис</span>
-              <span className="self-end font-sans text-[13px] text-white">ИТ-решения</span>
-            </span>
-          </Link>
+          <Logo imgClassName="h-[91.415px] w-auto" />
         </div>
 
-        <div className="flex flex-col flex-wrap items-start gap-8 sm:flex-row sm:gap-10">
+        <div className="flex flex-col flex-wrap items-start gap-8 sm:flex-row sm:items-end sm:gap-10">
           <div className="flex flex-col items-start gap-2">
-            <p className="font-body text-xl font-extrabold text-body-muted">г. Казань</p>
+            <p className="font-body text-xl font-extrabold text-body-muted pb-2">г. Казань</p>
             <p className="font-body text-sm font-medium text-body-muted">ул. Габдуллы Тукая, 58, офис АКРЕЛИС</p>
             <a href="tel:+78432105991" className="font-body text-sm font-medium text-body-muted">
               +7 843 210-59-91
             </a>
             <a href="mailto:acrelis.ru@gmail.com" className="font-body text-sm font-medium text-body-muted">
-              acrelis.ru@gmail.com
+              info@acrelis.ru
             </a>
           </div>
 
@@ -96,16 +96,18 @@ export default function Footer() {
           Заказать звонок
         </button>
 
-        <div className="border-t border-white/30" />
+        <div className="h-4 border-b border-white/30" />
 
-        <div className="flex flex-col flex-wrap items-start gap-3 sm:flex-row sm:items-center sm:gap-9">
+        <div className="flex flex-col flex-wrap items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-body text-sm font-medium text-body-muted">© 2026 АКРЕЛИС</p>
-          <Link href="/privacy-policy" className="font-body text-sm font-medium text-body-muted">
-            Политика обработки персональных данных
-          </Link>
-          <Link href="/data-consent" className="font-body text-sm font-medium text-body-muted">
-            Согласие на обработку персональных данных
-          </Link>
+          <div className="flex flex-col flex-wrap items-start gap-3 sm:flex-row sm:items-center sm:gap-9">
+            <Link href="/privacy-policy" className="font-body text-sm font-medium text-body-muted">
+              Политика обработки персональных данных
+            </Link>
+            <Link href="/data-consent" className="font-body text-sm font-medium text-body-muted">
+              Согласие на обработку персональных данных
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

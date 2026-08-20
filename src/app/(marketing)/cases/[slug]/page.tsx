@@ -2,6 +2,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getCaseBySlug, getCases } from "@/data/cases";
+import CaseHero from "@/components/cases/CaseHero";
+import CaseInfoTasks from "@/components/cases/CaseInfoTasks";
+import CaseResult from "@/components/cases/CaseResult";
+import CaseGallery from "@/components/cases/CaseGallery";
+import ContactCTA from "@/components/home/ContactCTA";
+import CasesPreview from "@/components/about/CasesPreview";
 
 export async function generateStaticParams() {
   return getCases().map((c) => ({ slug: c.slug }));
@@ -23,6 +29,11 @@ export async function generateMetadata({
   });
 }
 
+// Figma id=145:9354 (найден по garbled-имени фрейма — см. комментарий в data/cases.ts) —
+// вся страница целиком: Hero → Клиент/Период/Стек/Команда + Задачи → Результат + метрики →
+// Галерея → "Расскажите о Вашем проекте" (ContactCTA) → "Кейсы" (тот же CasesPreview, что
+// на /about — секция называется "Кейсы" и там же кнопка "Все проекты" → /portfolio) →
+// Footer (глобальный).
 export default async function CasePage({
   params,
 }: {
@@ -34,15 +45,12 @@ export default async function CasePage({
 
   return (
     <div>
-      {/*
-        TODO по ТЗ (детальная страница кейса):
-        - 1 экран (обложка): название, теги, короткое описание, фон
-        - 2 экран: клиент / период / стек / команда / ссылка на проект, блок "Задачи",
-          блок "Результат" + метрики с анимацией нарастания цифр при скролле
-        - 3 экран: галерея скриншотов
-        - Кнопка "Все проекты" → /portfolio
-        Админка для CRUD этих полей — вне зоны ответственности фронтенда (см. src/data/cases.ts).
-      */}
+      <CaseHero item={item} />
+      <CaseInfoTasks item={item} />
+      <CaseResult item={item} />
+      <CaseGallery item={item} />
+      <ContactCTA />
+      <CasesPreview />
     </div>
   );
 }

@@ -42,3 +42,43 @@ export const calculatorLeadSchema = z.object({
 });
 
 export type CalculatorLeadValues = z.infer<typeof calculatorLeadSchema>;
+
+// Страница /about, форма "Обсудить сотрудничество" (Figma 574:931 / 869:1438 / 869:1679):
+// табы "Хочу стать клиентом" и "Стать партнёром" используют один и тот же набор полей
+// (задизайнены в Figma идентично) — Имя*/Фамилия/Email*/Телефон*/Комментарий + согласие*
+// (маркетинговое согласие опционально).
+export const cooperationClientSchema = z.object({
+  name: z.string().min(1, "Укажите имя"),
+  surname: z.string().optional(),
+  email: z.email({ message: "Некорректный формат почты" }).min(1, "Укажите почту"),
+  phone: phoneSchema,
+  comment: z.string().optional(),
+  consent: z.literal(true, {
+    message: "Необходимо согласие на обработку данных",
+  }),
+  marketingConsent: z.boolean().optional(),
+});
+
+export type CooperationClientValues = z.infer<typeof cooperationClientSchema>;
+
+// Таб "Работать у вас" (Figma 869:1507): те же поля + выбор вакансии*, файл резюме
+// (опционально — нативный <input type="file">, без отдельной схемы-поля) и третье
+// согласие — на обработку данных для кадрового резерва.
+export const cooperationCareerSchema = cooperationClientSchema.extend({
+  vacancy: z.string().min(1, "Выберите вакансию"),
+  resumeConsent: z.literal(true, {
+    message: "Необходимо согласие на обработку данных",
+  }),
+});
+
+export type CooperationCareerValues = z.infer<typeof cooperationCareerSchema>;
+
+// Подписка на рассылку блога (Figma id=449:1458, /blog/[slug]): Email* + согласие*.
+export const newsletterSchema = z.object({
+  email: z.email({ message: "Некорректный формат почты" }).min(1, "Укажите почту"),
+  consent: z.literal(true, {
+    message: "Необходимо согласие на обработку данных",
+  }),
+});
+
+export type NewsletterValues = z.infer<typeof newsletterSchema>;

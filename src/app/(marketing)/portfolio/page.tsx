@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import PortfolioListing from "@/components/portfolio/PortfolioListing";
+import ContactCTA from "@/components/home/ContactCTA";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Портфолио",
@@ -7,16 +9,14 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/portfolio",
 });
 
+// Figma id=145:5956 — вся страница целиком, порядок сверен по Y-координатам: хедер
+// (глобальный) → заголовок+фильтр по категориям → сетка карточек → "Расскажите о Вашем
+// проекте" (тот же ContactCTA) → Footer (глобальный).
 export default function PortfolioPage() {
   return (
     <div>
-      {/*
-        TODO по ТЗ (Портфолио):
-        - Фильтрация карточек по категориям ("Все", "Сайты", "Мини-приложения", ...) без перезагрузки страницы
-        - Кнопка "Показать ещё" — подгружает следующую порцию карточек с плавным появлением
-        - Hover-эффекты на карточках и стрелках перехода
-        - Клик по карточке → /cases/[slug]
-      */}
+      <PortfolioListing />
+      <ContactCTA />
     </div>
   );
 }

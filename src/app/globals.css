@@ -33,3 +33,117 @@ body {
   color: var(--foreground);
   font-family: var(--font-axiforma), Arial, Helvetica, sans-serif;
 }
+
+/* Бегущий градиент обводки карточки этапа при hover (Timeline, /automation) */
+@keyframes gradient-flow {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Бесконечная лента команды (TeamMarquee, /about) — трек продублирован ×2, поэтому
+   translate ровно на -50% даёт бесшовный цикл. */
+@keyframes marquee-left {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+}
+
+/* Контент статьи блога (/blog/[slug], Figma id=446:973) — рендерится через
+   dangerouslySetInnerHTML из data/blog-posts.ts (contentHtml), поэтому стили заданы
+   обычным CSS на тегах, а не Tailwind-классами внутри HTML-строки (JIT не гарантированно
+   сканирует такие строки). */
+.blog-article {
+  color: #1e2f35;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+.blog-article > *:first-child {
+  margin-top: 0;
+}
+.blog-article > p {
+  margin-top: 20px;
+}
+.blog-article > p:first-child {
+  font-size: 24px;
+  line-height: 32px;
+}
+.blog-article h2 {
+  margin-top: 40px;
+  font-family: var(--font-axiforma), Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 32px;
+  letter-spacing: -1px;
+  color: #1e2f35;
+}
+.blog-article h3 {
+  margin-top: 40px;
+  font-family: var(--font-axiforma), Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 28px;
+  color: #1e2f35;
+}
+.blog-article h2 + h3 {
+  margin-top: 20px;
+}
+.blog-article strong {
+  color: #ff050a;
+  font-weight: 600;
+}
+.blog-article blockquote {
+  margin-top: 40px;
+  padding-left: 24px;
+  border-left: 4px solid #ff050a;
+}
+.blog-article blockquote p + p {
+  margin-top: 20px;
+}
+.blog-article blockquote a {
+  color: #ff050a;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.blog-article ul {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.blog-article li {
+  position: relative;
+  padding-left: 18px;
+}
+.blog-article li::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ff050a;
+}
+.blog-article .callout {
+  margin-top: 40px;
+  padding: 40px;
+  border-radius: 12px;
+  background: rgba(150, 150, 150, 0.05);
+}
+.blog-article .callout-title {
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #ff050a;
+}
+.blog-article .callout p:not(.callout-title) {
+  margin-top: 12px;
+}

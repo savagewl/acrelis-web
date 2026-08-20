@@ -22,7 +22,7 @@ const TECH_CARDS: TechCardData[] = [
   {
     title: "Интеграции",
     description: "API‑интеграции и сервисы",
-    tags: ["Aigram", "Bitrix24", "1C", "ЮKassa", "Google API", "REST API"],
+    tags: ["Aigram", "Bitrix24", "ЮKassa", "Google API", "REST API"],
   },
   {
     title: "DevOps",
